@@ -9,6 +9,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include <SDL_mixer.h>
 #include "ShaderProgram.h"
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp" 
@@ -343,6 +344,13 @@ const Uint8 *keys = SDL_GetKeyboardState(NULL);
 
 int main(int argc, char *argv[])
 {
+	int Mix_OpenAudio(int frequency, Uint16 format, int channels, int chunksize);
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+
+	Mix_Music *music;
+	music = Mix_LoadMUS("wii.mp3");
+	Mix_PlayMusic(music, -1);
+
 	SDL_Init(SDL_INIT_VIDEO);
 	displayWindow = SDL_CreateWindow("Platformer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 360, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(displayWindow);

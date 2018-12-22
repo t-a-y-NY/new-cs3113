@@ -1,5 +1,7 @@
 ﻿  main.cpp
-c:\users\temyo\documents\github\new-cs3113\platformer-demo-v2\nyucodebase\nyucodebase\main.cpp(33): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\temyo\documents\github\new-cs3113\platformer-demo-v2\nyucodebase\nyucodebase\main.cpp(112): warning C4018: '<=': signed/unsigned mismatch
-c:\users\temyo\documents\github\new-cs3113\platformer-demo-v2\nyucodebase\nyucodebase\main.cpp(406): warning C4018: '<=': signed/unsigned mismatch
-  NYUCodebase.vcxproj -> C:\Users\temyo\Documents\GitHub\new-cs3113\platformer-demo-v2\NYUCodebase\Debug\NYUCodebase.exe
+c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(34): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(113): warning C4018: '<=': signed/unsigned mismatch
+c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(414): warning C4018: '<=': signed/unsigned mismatch
+  ShaderProgram.cpp
+  Generating Code...
+  NYUCodebase.vcxproj -> C:\Users\temyo\Documents\GitHub\new-cs3113\final-project\NYUCodebase\Debug\NYUCodebase.exe
