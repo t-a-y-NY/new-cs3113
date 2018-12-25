@@ -239,7 +239,9 @@ void Entity::collisionHandler()
 
 }
 
-GLuint LoadTexture(const char *filePath) {
+GLuint LoadTexture(char *filePath) {
+	filePath = "C:\\Users\\temyo\\Documents\\GitHub\\new-cs3113\\final-project\\NYUCodebase\\NYUCodebase\\characters_3.png"; // throwing stuff at the wall to see what sticks
+
 	int w, h, comp;
 	unsigned char* image = stbi_load(filePath, &w, &h, &comp, STBI_rgb_alpha);
 
@@ -258,8 +260,26 @@ GLuint LoadTexture(const char *filePath) {
 	return retTexture;
 }
 
+void spriteStuff()
+{
+	int index = 20;
+	int spriteCountX = 8;
+	int spriteCountY = 4;
+	float u = (float)(((int)index) % spriteCountX) / (float)spriteCountX;
+	float v = (float)(((int)index) / spriteCountX) / (float)spriteCountY;
+	float spriteWidth = 1.0 / (float)spriteCountX;
+	float spriteHeight = 1.0 / (float)spriteCountY;
+	GLfloat spriteUVs[] = { u, v,
+						  u, v + spriteHeight,
+						  u + spriteWidth, v + spriteHeight,
+						  u + spriteWidth, v
+	};
+}
+
 void Entity::Draw(ShaderProgram& program, float elapsed, float texCoords[] = {})
 {
+	spriteStuff();
+
 	glm::mat4 modelMatrix = glm::mat4(1.0f); // set to identity
 	
 	if (isStatic == false)
@@ -327,25 +347,6 @@ void Entity::Draw(ShaderProgram& program, float elapsed, float texCoords[] = {})
 	glDisableVertexAttribArray(program.texCoordAttribute);
 }
 
-
-/*
-void spriteStuff()
-{
-	int index = 20;
-	int spriteCountX = 8;
-	int spriteCountY = 4;
-	float u = (float)(((int)index) % spriteCountX) / (float)spriteCountX;
-	float v = (float)(((int)index) / spriteCountX) / (float)spriteCountY;
-	float spriteWidth = 1.0 / (float)spriteCountX;
-	float spriteHeight = 1.0 / (float)spriteCountY;
-	GLfloat spriteUVs[] = { u, v,
-						  u, v + spriteHeight,
-						  u + spriteWidth, v + spriteHeight,
-						  u + spriteWidth, v
-	};
-}
-*/
-
 /*
 void DrawSpriteSheetSprite(ShaderProgram& program, int index, int spriteCountX, int spriteCountY)
 {
@@ -376,8 +377,6 @@ void DrawSpriteSheetSprite(ShaderProgram& program, int index, int spriteCountX, 
 }
 */
 
-
-
 void DrawSpriteSheetSprite(ShaderProgram& program, const int index, int spriteCountX, int spriteCountY, Entity& entity, float elapsed)
 {
 	float u = (float)(((int)index) % spriteCountX) / (float)spriteCountX;
@@ -398,8 +397,6 @@ void DrawSpriteSheetSprite(ShaderProgram& program, const int index, int spriteCo
 
 	entity.Draw(program, elapsed, texCoords);
 }
-
-
 
 const Uint8 *keys = SDL_GetKeyboardState(NULL);
 
@@ -462,8 +459,6 @@ int main(int argc, char *argv[])
 	bool done = false;
 	while (!done)
 	{
-		
-
 		// projection matrix and view matrix and whatever glClear() does
 		glClear(GL_COLOR_BUFFER_BIT);
 
