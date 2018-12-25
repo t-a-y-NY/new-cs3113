@@ -1,7 +1,7 @@
 ﻿  main.cpp
-c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(34): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(113): warning C4018: '<=': signed/unsigned mismatch
-c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(414): warning C4018: '<=': signed/unsigned mismatch
-  ShaderProgram.cpp
-  Generating Code...
+c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(37): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(116): warning C4018: '<=': signed/unsigned mismatch
+c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(385): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(386): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\temyo\documents\github\new-cs3113\final-project\nyucodebase\nyucodebase\main.cpp(499): warning C4018: '<=': signed/unsigned mismatch
   NYUCodebase.vcxproj -> C:\Users\temyo\Documents\GitHub\new-cs3113\final-project\NYUCodebase\Debug\NYUCodebase.exe

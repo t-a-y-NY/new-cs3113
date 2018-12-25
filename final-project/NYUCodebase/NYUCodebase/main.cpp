@@ -14,6 +14,9 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp" 
 
+#define STB_IMAGE_IMPLEMENTATION 
+#include "stb_image.h"
+
 #ifdef _WINDOWS
 #define RESOURCE_FOLDER ""
 #else
@@ -54,7 +57,7 @@ public:
 	int uniqueIdentifier;
 	bool isEnemy;
 
-	void Draw(ShaderProgram& program, float elapsed);
+	void Draw(ShaderProgram& program, float elapsed, float texCoords[]);
 	void collisionHandler();
 };
 
@@ -236,7 +239,26 @@ void Entity::collisionHandler()
 
 }
 
-void Entity::Draw(ShaderProgram& program, float elapsed)
+GLuint LoadTexture(const char *filePath) {
+	int w, h, comp;
+	unsigned char* image = stbi_load(filePath, &w, &h, &comp, STBI_rgb_alpha);
+
+	if (image == NULL) {
+		std::cout << "Unable to load image. Make sure the path is correct\n";
+		assert(false);
+	}
+
+	GLuint retTexture;
+	glGenTextures(1, &retTexture);
+	glBindTexture(GL_TEXTURE_2D, retTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	stbi_image_free(image);
+	return retTexture;
+}
+
+void Entity::Draw(ShaderProgram& program, float elapsed, float texCoords[] = {})
 {
 	glm::mat4 modelMatrix = glm::mat4(1.0f); // set to identity
 	
@@ -277,7 +299,8 @@ void Entity::Draw(ShaderProgram& program, float elapsed)
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(pos_x, pos_y, 0.0f));
 	program.SetModelMatrix(modelMatrix);
 
-	
+	GLuint texture = LoadTexture(RESOURCE_FOLDER"characters_3.png");
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	float vertices[] = {
 		-width / 2.0f, height / 2.0f,
@@ -288,8 +311,20 @@ void Entity::Draw(ShaderProgram& program, float elapsed)
 
 	glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
 	glEnableVertexAttribArray(program.positionAttribute);
+
+	/*float texCoords[] = {
+		-width / 2.0f, height / 2.0f,
+		width / 2.0f, height / 2.0f,
+		width / 2.0f, -height / 2.0f,
+		-width / 2.0f, -height / 2.0f
+	};*/
+
+	glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
+	glEnableVertexAttribArray(program.texCoordAttribute);
+
 	glDrawArrays(GL_POLYGON, 0, 4);
 	glDisableVertexAttribArray(program.positionAttribute);
+	glDisableVertexAttribArray(program.texCoordAttribute);
 }
 
 
@@ -309,7 +344,9 @@ void spriteStuff()
 						  u + spriteWidth, v
 	};
 }
+*/
 
+/*
 void DrawSpriteSheetSprite(ShaderProgram& program, int index, int spriteCountX, int spriteCountY)
 {
 	float u = (float)(((int)index) % spriteCountX) / (float)spriteCountX;
@@ -337,19 +374,46 @@ void DrawSpriteSheetSprite(ShaderProgram& program, int index, int spriteCountX, 
 
 	// draw this data
 }
-
 */
+
+
+
+void DrawSpriteSheetSprite(ShaderProgram& program, const int index, int spriteCountX, int spriteCountY, Entity& entity, float elapsed)
+{
+	float u = (float)(((int)index) % spriteCountX) / (float)spriteCountX;
+	float v = (float)(((int)index) / spriteCountX) / (float)spriteCountY;
+	float spriteWidth = 1.0 / (float)spriteCountX;
+	float spriteHeight = 1.0 / (float)spriteCountY;
+
+	float texCoords[] = {
+		u, v + spriteHeight,
+		u + spriteWidth, v,
+		u, v,
+		u + spriteWidth, v,
+		u, v + spriteHeight,
+		u + spriteWidth, v + spriteHeight
+	};
+
+	// draw this data
+
+	entity.Draw(program, elapsed, texCoords);
+}
+
+
 
 const Uint8 *keys = SDL_GetKeyboardState(NULL);
 
 int main(int argc, char *argv[])
 {
+	// setup music
 	int Mix_OpenAudio(int frequency, Uint16 format, int channels, int chunksize);
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
 	Mix_Music *music;
 	music = Mix_LoadMUS("wii.mp3");
 	Mix_PlayMusic(music, -1);
+
+	// setup whatever this stuff does
 
 	SDL_Init(SDL_INIT_VIDEO);
 	displayWindow = SDL_CreateWindow("Platformer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 360, SDL_WINDOW_OPENGL);
@@ -386,6 +450,14 @@ int main(int argc, char *argv[])
 	Enemy enemy(10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 2.0f);
 	entities.push_back(enemy);
 
+	// animation
+	const int runAnimation[] = { 9, 10, 11, 12, 13 };
+	const int numFrames = 5;
+	float animationElapsed = 0.0f;
+	float framesPerSecond = 30.0f;
+	int currentIndex = 0;
+	// end animation
+
 	SDL_Event event;
 	bool done = false;
 	while (!done)
@@ -404,7 +476,20 @@ int main(int argc, char *argv[])
 		float elapsed = ticks - lastFrameTicks;
 		lastFrameTicks = ticks;
 
-		player.Draw(program, elapsed);
+		// draw
+
+		// player.Draw(program, elapsed);
+		animationElapsed += elapsed;
+		if (animationElapsed > 1.0 / framesPerSecond) {
+			currentIndex++;
+			animationElapsed = 0.0;
+			if (currentIndex > numFrames - 1) {
+				currentIndex = 0;
+			}
+		}
+
+		DrawSpriteSheetSprite(program, runAnimation[currentIndex], 8, 4, player, elapsed);
+
 		ground.Draw(program, elapsed);
 		enemy.Draw(program, elapsed);
 
